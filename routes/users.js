@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const userController = require('../controller/user/userController')
 const verifyToken = require('../controller/authController');
+const landingController = require('../controller/user/landingController')
 
 /* GET users listing. */
 // router.get('/', function(req, res, next) {
@@ -11,5 +12,8 @@ const verifyToken = require('../controller/authController');
 router.post('/register', userController.register)
 router.post('/login', userController.signin)
 router.post('/profile', verifyToken, userController.profile)
+
+/*** Landing Pages Api */
+router.get('/landingRoomAccomdation', landingController.landingRoomAccomdation)
 
 module.exports = router;
