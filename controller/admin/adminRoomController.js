@@ -17,7 +17,7 @@ const add = async (req, res, next) => {
     try {
         const { token } = req.headers
         const { _id, email } = token_decode(token)
-        const { hotelId, title, subTitle, description, video, logo, property, location} = req.body
+        const { hotelId, title, subTitle, description, video, basePrice, discountPrice, logo, property, location} = req.body
         const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
         const fetch_hotel = await adminHotelModel.find({_id:hotelId})
@@ -29,6 +29,8 @@ const add = async (req, res, next) => {
         if(!video) return res.json({ status: false, msg: 'Please provide the video' });
         if(!location) return res.json({ status: false, msg: 'Please provide the location' });
         if(!property) return res.json({ status: false, msg: 'Please provide the property' });
+        if(!basePrice) return res.json({ status: false, msg: 'Please provide the base price' });
+        if(!discountPrice) return res.json({ status: false, msg: 'Please provide the discount price' });
         const fetch_room = await adminRoomModel.findOne({title: title.toLowerCase()})
         if(fetch_room) return res.json({ status: false, msg: 'The room already exists' });
         const date = Date.now()
@@ -45,6 +47,8 @@ const add = async (req, res, next) => {
             description: description,
             video: video,
             logo: finalImage,
+            basePrice: basePrice,
+            discountPrice: discountPrice,
             property: JSON.stringify(property),
             location:location,
             createdById: _id,
