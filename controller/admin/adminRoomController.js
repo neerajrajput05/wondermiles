@@ -18,6 +18,7 @@ const add = async (req, res, next) => {
         const { token } = req.headers
         const { _id, email } = token_decode(token)
         const { hotelId, title, subTitle, description, video, logo, property, location} = req.body
+        return res.json({status:true, data:req.protocol+"://"+req.headers.host})
         const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
         const fetch_hotel = await adminHotelModel.find({_id:hotelId})

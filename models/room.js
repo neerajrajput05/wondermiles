@@ -26,7 +26,13 @@ const room = new Schema({
     },
     logo: {
         type: String,
-        lowercase: true,
+    },
+    basePrice: {
+        type: String
+    },
+    discountPrice: {
+        type: String
+
     },
     property: {
         type: String

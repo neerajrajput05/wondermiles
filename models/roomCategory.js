@@ -19,7 +19,6 @@ const room_category = new Schema({
     },
     logo: {
         type: String,
-        lowercase: true,
     },
     status: {
         type: Boolean,

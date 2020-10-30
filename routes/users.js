@@ -15,5 +15,6 @@ router.post('/profile', verifyToken, userController.profile)
 
 /*** Landing Pages Api */
 router.get('/landingRoomAccomdation', landingController.landingRoomAccomdation)
+router.get('/landingHotelAccomdation', landingController.landingHotelAccomdation)
 
 module.exports = router;
