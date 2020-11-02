@@ -6,6 +6,7 @@ const adminCategoryController = require('../controller/admin/adminCategoryContro
 const adminRoomCategoryController = require('../controller/admin/adminRoomCategoryController')
 const adminHotelController = require('../controller/admin/adminHotelController')
 const adminRoomController = require('../controller/admin/adminRoomController')
+const adminSliderController = require('../controller/admin/adminSliderController')
 
 /* GET users listing. */
 // router.get('/', function(req, res, next) {
@@ -17,6 +18,10 @@ router.post('/profile', verifyToken, adminController.profile)
 
 /** Category */
 router.post('/addCategory', verifyToken, adminCategoryController.add)
+
+
+/** Slider */
+router.post('/addSlider', verifyToken, adminSliderController.add)
 
 /** Room Category */
 router.post('/addRoomCategory', verifyToken, adminRoomCategoryController.add)

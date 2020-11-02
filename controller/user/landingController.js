@@ -8,6 +8,7 @@ const config = require('../../config/database');
 const path = require('path')
 const roomModel = require('../../models/room')
 const hotelModel = require('../../models/hotel')
+const sliderModel = require('../../models/slider')
 
 
 const landingRoomAccomdation = async(req, res, next) => {
@@ -31,9 +32,22 @@ const landingHotelAccomdation = async(req, res, next) => {
     }
 }
 
+const landingSlider = async(req, res, next) => {
+    try {
+        const fetch_slider = await sliderModel.find()
+        if(!fetch_slider) return res.status(404).json({status:false, msg:'The slider not found.'})
+        return res.json({status: true, msg:'successfully getting', data: fetch_slider})
+        
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({status:false, msg: 'something went wrong'})
+    }
+}
+
 
 
 module.exports = {
     landingRoomAccomdation: landingRoomAccomdation,
-    landingHotelAccomdation: landingHotelAccomdation
+    landingHotelAccomdation: landingHotelAccomdation,
+    landingSlider: landingSlider
 }
