@@ -6,6 +6,9 @@ const hotel = new Schema({
     categoryId:{
         type: String
     },
+    code: {
+        type: String
+    },
     title : {
         type: String,
         trim: true,
@@ -38,6 +41,10 @@ const hotel = new Schema({
     },
     callUs:{
         type: String
+    },
+    featured: {
+        type: Boolean,
+        default: false
     },
     status: {
         type: Boolean,

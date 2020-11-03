@@ -10,13 +10,16 @@ const token_decode = require('../../logic/token_decode')
 const adminCategoryModel = require('../../models/category')
 const adminRoomCategoryModel = require('../../models/roomCategory')
 const adminHotelModel = require('../../models/hotel')
+let blob = require('based-blob');
+const atob = require("atob");
+
 
 
 const add = async (req, res, next) => {
     try {
         const { token } = req.headers
         const { _id, email } = token_decode(token)
-        const { categoryId, title, subTitle, description, video, logo, aminities, rules, location, callUs} = req.body
+        const { categoryId, title, subTitle, description, video, logo, aminities, rules, location, callUs, code} = req.body
         const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
         const fetch_category = await adminCategoryModel.find({_id:categoryId})
@@ -30,8 +33,16 @@ const add = async (req, res, next) => {
         if(!rules) return res.json({ status: false, msg: 'Please provide the rules' });
         if(!location) return res.json({ status: false, msg: 'Please provide the location' });
         if(!callUs) return res.json({ status: false, msg: 'Please provide the callUs' });
+        if(!code) return res.json({ status: false, msg: 'Please provide the code' });
+        const fetch_code = await adminHotelModel.findOne({code: code})
+        if(fetch_code) return res.json({ status: false, msg: 'Please provide a new code.' });
         const fetch_hotel = await adminHotelModel.findOne({title: title.toLowerCase()})
         if(fetch_hotel) return res.json({ status: false, msg: 'The hotel already exists' });
+        
+        // const blob_img = new blob(logo)
+        // const img = URL.createObjectURL(blob_img)
+        // console.log('blob', img)
+        // return res.json({data: img})
         const date = Date.now()
         var fileName =_id+(date)+".png"
         require("fs").writeFile(path.join("public/images/Hotel/"+fileName), logo, "base64", function(err) {
@@ -49,6 +60,7 @@ const add = async (req, res, next) => {
             aminities: JSON.stringify(aminities),
             rules: JSON.stringify(rules),
             location:location,
+            code: code,
             callUs: JSON.stringify(callUs),
             createdById: _id,
             createdAt: timeStamp,

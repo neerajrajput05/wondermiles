@@ -11,11 +11,11 @@ const hotelModel = require('../../models/hotel')
 const sliderModel = require('../../models/slider')
 
 
-const landingRoomAccomdation = async(req, res, next) => {
+const landingPalaceAccomdation = async(req, res, next) => {
     try {
-        const fetch_room = await roomModel.find()
-        if(!fetch_room) return res.status(404).json({status:false, msg:'The room not found.'})
-        return res.json({status: true, msg:'successfully getting', data: fetch_room})
+        const fetch_hotel = await hotelModel.find({featured: true})
+        if(!fetch_hotel) return res.status(404).json({status:false, msg:'The palace not found.'})
+        return res.json({status: true, msg:'successfully getting', data: fetch_hotel})
     } catch (error) {
         console.log(error)
         return res.status(500).json({status:false, msg: 'something went wrong.'})
@@ -23,7 +23,7 @@ const landingRoomAccomdation = async(req, res, next) => {
 }
 const landingHotelAccomdation = async(req, res, next) => {
     try {
-        const fetch_hotel = await hotelModel.find()
+        const fetch_hotel = await hotelModel.find({featured: true})
         if(!fetch_hotel) return res.status(404).json({status:false, msg:'The hotel not found.'})
         return res.json({status: true, msg:'successfully getting', data: fetch_hotel})
     } catch (error) {
@@ -47,7 +47,7 @@ const landingSlider = async(req, res, next) => {
 
 
 module.exports = {
-    landingRoomAccomdation: landingRoomAccomdation,
+    landingPalaceAccomdation: landingPalaceAccomdation,
     landingHotelAccomdation: landingHotelAccomdation,
     landingSlider: landingSlider
 }

@@ -14,7 +14,7 @@ router.post('/login', userController.signin)
 router.post('/profile', verifyToken, userController.profile)
 
 /*** Landing Pages Api */
-router.get('/landingRoomAccomdation', landingController.landingRoomAccomdation)
+router.get('/landingPalaceAccomdation', landingController.landingPalaceAccomdation)
 router.get('/landingHotelAccomdation', landingController.landingHotelAccomdation)
 router.get('/landingSlider', landingController.landingSlider)
 
