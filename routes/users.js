@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 const userController = require('../controller/user/userController')
 const verifyToken = require('../controller/authController');
-const landingController = require('../controller/user/landingController')
+const landingController = require('../controller/user/landingController');
+const destinationController = require('../controller/user/destinationController');
 
 /* GET users listing. */
 // router.get('/', function(req, res, next) {
@@ -17,5 +18,8 @@ router.post('/profile', verifyToken, userController.profile)
 router.get('/landingPalaceAccomdation', landingController.landingPalaceAccomdation)
 router.get('/landingHotelAccomdation', landingController.landingHotelAccomdation)
 router.get('/landingSlider', landingController.landingSlider)
+
+/**** Destination Page */
+router.get('/destinationList', destinationController.destinationList)
 
 module.exports = router;
