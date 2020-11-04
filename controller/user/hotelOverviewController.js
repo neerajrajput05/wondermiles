@@ -11,11 +11,12 @@ const hotelModel = require('../../models/hotel')
 const sliderModel = require('../../models/slider')
 
 
-const destinationList = async(req, res, next) => {
+const hotelPreview = async(req, res, next) => {
     try {
-        const fetch_destination = await hotelModel.find()
-        if(!fetch_destination) return res.status(404).json({status:false, msg:'The destination not found.'})
-        return res.json({status: true, msg:'successfully getting', data: fetch_destination})
+        const { hotelId } = req.body
+        const fetch_hotelview = await hotelModel.findOne({_id: hotelId, status: true})
+        if(!fetch_hotelview) return res.status(404).json({status:false, msg:'The hotel not found.'})
+        return res.json({status: true, msg:'successfully getting', data: fetch_hotelview})
     } catch (error) {
         console.log(error)
         return res.status(500).json({status:false, msg: 'something went wrong.'})
@@ -27,5 +28,5 @@ const destinationList = async(req, res, next) => {
 
 
 module.exports = {
-    destinationList: destinationList
+    hotelPreview: hotelPreview
 }

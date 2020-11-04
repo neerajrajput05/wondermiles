@@ -4,6 +4,7 @@ const userController = require('../controller/user/userController')
 const verifyToken = require('../controller/authController');
 const landingController = require('../controller/user/landingController');
 const destinationController = require('../controller/user/destinationController');
+const hotelOverviewController = require('../controller/user/hotelOverviewController');
 
 /* GET users listing. */
 // router.get('/', function(req, res, next) {
@@ -21,5 +22,8 @@ router.get('/landingSlider', landingController.landingSlider)
 
 /**** Destination Page */
 router.get('/destinationList', destinationController.destinationList)
+
+/*** Hotel Overview */
+router.get('/hotelPreview', hotelOverviewController.hotelPreview)
 
 module.exports = router;
