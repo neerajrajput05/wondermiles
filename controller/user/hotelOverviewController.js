@@ -14,8 +14,8 @@ const sliderModel = require('../../models/slider')
 const hotelPreview = async(req, res, next) => {
     try {
         const { hotelId } = req.body
-        const fetch_hotelview = await hotelModel.findOne({_id: hotelId, status: true})
-        if(!fetch_hotelview) return res.status(404).json({status:false, msg:'The hotel not found.'})
+        const fetch_hotelview = await hotelModel.findOne({_id: hotelId})
+        if(!fetch_hotelview) return res.status(404).json({status: false, msg:'The hotel not found.'})
         return res.json({status: true, msg:'successfully getting', data: fetch_hotelview})
     } catch (error) {
         console.log(error)
