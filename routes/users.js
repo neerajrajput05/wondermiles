@@ -25,5 +25,6 @@ router.get('/destinationList', destinationController.destinationList)
 
 /*** Hotel Overview */
 router.get('/hotelPreview', hotelOverviewController.hotelPreview)
+router.get('/resortPreview', hotelOverviewController.resortPreview)
 
 module.exports = router;

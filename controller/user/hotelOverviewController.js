@@ -24,10 +24,25 @@ const hotelPreview = async(req, res, next) => {
     }
 }
 
+const resortPreview = async(req, res, next) => {
+    try {
+        const { resortId } = req.body
+        if(!resortId) return res.status(404).json({status:false, msg: 'Please provide resort id.'})
+        const fetch_resort = await hotelModel.findById({_id: resortId})
+        if(!fetch_resort) return res.status(404).json({status: false, msg:'The hotel not found.'})
+        return res.status(200).json({status: true, msg:'successfully getting', data: fetch_resort})
+        
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({status:false, msg: 'something went wrong.'})
+    }
+}
+
 
 
 
 
 module.exports = {
-    hotelPreview: hotelPreview
+    hotelPreview: hotelPreview,
+    resortPreview: resortPreview
 }
