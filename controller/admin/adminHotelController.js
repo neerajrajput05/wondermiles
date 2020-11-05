@@ -37,7 +37,7 @@ const add = async (req, res, next) => {
         const fetch_code = await adminHotelModel.findOne({code: code})
         if(fetch_code) return res.json({ status: false, msg: 'Please provide a new code.' });
         const fetch_hotel = await adminHotelModel.findOne({title: title.toLowerCase()})
-        if(fetch_hotel) return res.json({ status: false, msg: 'The hotel already exists' });
+        // if(fetch_hotel) return res.json({ status: false, msg: 'The hotel already exists' });
         
         // const blob_img = new blob(logo)
         // const img = URL.createObjectURL(blob_img)
