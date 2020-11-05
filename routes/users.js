@@ -24,7 +24,7 @@ router.get('/landingSlider', landingController.landingSlider)
 router.get('/destinationList', destinationController.destinationList)
 
 /*** Hotel Overview */
-router.get('/hotelPreview', hotelOverviewController.hotelPreview)
+router.post('/hotelPreview', hotelOverviewController.hotelPreview)
 router.post('/resortPreview', hotelOverviewController.resortPreview)
 
 module.exports = router;
