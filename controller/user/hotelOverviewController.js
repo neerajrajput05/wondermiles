@@ -17,7 +17,7 @@ const hotelPreview = async(req, res, next) => {
         // if(!hotel_id) return res.status(404).json({status:false, msg: 'Please provide hotel id.'})
         const fetch_hotelview = await hotelModel.findOne()
         if(!fetch_hotelview) return res.status(404).json({status: false, msg:'The hotel not found.'})
-        return res.status(200).json({status: true, msg:'successfully getting', data: fetch_hotelview})
+        return res.status(200).json({status: true, msg:'successfully getting', data: fetch_hotelview, aminities: JSON.parse(fetch_hotelview.aminities), rules: JSON.parse(fetch_hotelview.rules), callus: JSON.parse(fetch_hotelview.callUs)})
     } catch (error) {
         console.log(error)
         return res.status(500).json({status:false, msg: 'something went wrong.'})
