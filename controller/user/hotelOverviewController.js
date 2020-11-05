@@ -30,7 +30,7 @@ const resortPreview = async(req, res, next) => {
         if(!resortId) return res.status(404).json({status:false, msg: 'Please provide resort id.'})
         const fetch_resort = await hotelModel.findById({_id: resortId})
         if(!fetch_resort) return res.status(404).json({status: false, msg:'The hotel not found.'})
-        return res.status(200).json({status: true, msg:'successfully getting', data: fetch_resort})
+        return res.status(200).json({status: true, msg:'successfully getting', data: fetch_resort, aminities: JSON.parse(fetch_resort.aminities), rules: JSON.parse(fetch_resort.rules), callus: JSON.parse(fetch_resort.callUs)})
         
     } catch (error) {
         console.log(error)
