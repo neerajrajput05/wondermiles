@@ -47,6 +47,23 @@ const add = async (req, res, next) => {
 }
 
 
+const categoryList = async(req, res, next) => {
+    try {
+        const { token } = req.headers
+        const { _id, email } = token_decode(token)
+        const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
+        if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
+        const fetch_category = await adminCategoryModel.find()
+        if(!fetch_category) return res.status(404).json({status:false, msg:'Category not found.'})
+        return res.status(200).json({status:true, msg:'successfully getting', data: fetch_category})
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({status:false, msg: 'something went wrong'})        
+    }
+}
+
+
 module.exports = {
-    add: add
+    add: add,
+    categoryList: categoryList
 }

@@ -21,6 +21,7 @@ router.post('/userList', verifyToken, adminController.userList)
 
 /** Category */
 router.post('/addCategory', verifyToken, adminCategoryController.add)
+router.post('/categoryList', verifyToken, adminCategoryController.categoryList)
 
 
 /** Slider */
