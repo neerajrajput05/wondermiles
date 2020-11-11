@@ -16,6 +16,9 @@ const adminSliderController = require('../controller/admin/adminSliderController
 router.post('/login', adminController.signin)
 router.post('/profile', verifyToken, adminController.profile)
 
+/*** User List */
+router.post('/userList', verifyToken, adminController.userList)
+
 /** Category */
 router.post('/addCategory', verifyToken, adminCategoryController.add)
 

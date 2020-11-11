@@ -44,9 +44,25 @@ const profile = async(req, res, next ) => {
     }
 }
 
+const userList = async(req, res, next) => {
+    try {
+        const {token} = req.headers
+        const {email, _id} = token_decode(token)
+        const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
+        if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
+        const fetch_user = await admin.find({ role: { $not: { $eq: 'admin' } } } )
+        if(!fetch_user) return res.status(404).json({status:false, msg:'Users not found.'})
+        return res.status(200).json({status:true, msg:'successfully getting', data: fetch_user})
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ status: false, msg: 'something went wrong' })
+    }
+}
+
 
 
 module.exports = {
     signin: signin,
-    profile: profile
+    profile: profile,
+    userList: userList
 }
