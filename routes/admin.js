@@ -32,7 +32,7 @@ router.post('/addRoomCategory', verifyToken, adminRoomCategoryController.add)
 
 /** Hotel */
 router.post('/addHotel', verifyToken, adminHotelController.add)
-router.get('/hotelList', verifyToken, adminHotelController.hotelList)
+router.post('/hotelList', verifyToken, adminHotelController.hotelList)
 
 /** Room */
 router.post('/addRoom', verifyToken, adminRoomController.add)
