@@ -19,7 +19,7 @@ const add = async (req, res, next) => {
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
         if(!name) return res.status(404).json({ status: false, msg: 'Please provide the name' });
         if(!description) return res.status(404).json({ status: false, msg: 'Please provide the description' });
-        if(!image) return res.json({ status: false, msg: 'Please provide the image' });
+        if(!image) return res.status(404).json({ status: false, msg: 'Please provide the image' });
         const fetch_category = await adminCategoryModel.findOne({name: name.toLowerCase()})
         if(fetch_category) return res.status(404).json({ status: false, msg: 'This category already exists' });
         const date = Date.now()
