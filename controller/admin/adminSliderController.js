@@ -50,7 +50,25 @@ const add = async (req, res, next) => {
     }
 }
 
+const sliderList = async(req, res, next) =>{
+    try {
+        const { token } = req.headers
+        const { _id, email } = token_decode(token)
+        const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
+        if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
+        const fetch_slider = await adminSliderModel.find()
+        if(!fetch_slider) return res.status(404).status(404).json({status:false, msg:'Slider not exists'})
+        return res.status(200).json({status:true, msg: 'Successfully getting.', data: fetch_slider})
+    
+        
+    } catch (error) {        
+        console.log(error)
+        return res.status(500).json({status:false, msg: 'something went wrong'})
+    }
+}
+
 
 module.exports = {
-    add: add
+    add: add,
+    sliderList: sliderList
 }
