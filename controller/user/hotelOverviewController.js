@@ -10,6 +10,7 @@ const roomModel = require('../../models/room')
 const hotelModel = require('../../models/hotel')
 const sliderModel = require('../../models/slider');
 const hotel = require('../../models/hotel');
+const aminitiesModel = require('../../models/aminities')
 
 
 const hotelPreview = async(req, res, next) => {
@@ -26,10 +27,20 @@ const hotelPreview = async(req, res, next) => {
 }
 
 
+const aminitesPreview = async(req, res, next) => {
+    const { aminitiesId } = req.body
+    if(!aminitiesId) return res.status(404).json({status:false, msg: 'Please provide aminities id.'})
+    const fetch_aminities = await aminitiesModel.findOne({_id: aminitiesId, status:true})
+    if(!fetch_aminities) return res.status(404).json({status:false, msg: 'Aminities not exists.'})
+    return res.status(200).json({status:true, msg:'successfully getting', data: fetch_aminities})
+}
+
+
 
 
 
 
 module.exports = {
-    hotelPreview: hotelPreview
+    hotelPreview: hotelPreview,
+    aminitesPreview: aminitesPreview
 }
