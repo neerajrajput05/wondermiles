@@ -29,9 +29,6 @@ const hotel = new Schema({
     logo: {
         type: String,
     },
-    aminities: {
-        type: String
-    },
     rules: {
         type: String
     },

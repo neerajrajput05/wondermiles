@@ -10,6 +10,7 @@ const token_decode = require('../../logic/token_decode')
 const adminCategoryModel = require('../../models/category')
 const adminRoomCategoryModel = require('../../models/roomCategory')
 const adminHotelModel = require('../../models/hotel')
+const adminHotelAminities = require('../../models/hotelAminities')
 let blob = require('based-blob');
 const atob = require("atob");
 
@@ -35,8 +36,9 @@ const add = async (req, res, next) => {
         if(!callUs) return res.json({ status: false, msg: 'Please provide the callUs' });
         if(!code) return res.json({ status: false, msg: 'Please provide the code' });
         const fetch_code = await adminHotelModel.findOne({code: code})
-        if(fetch_code) return res.json({ status: false, msg: 'Please provide a new code.' });
+        // if(fetch_code) return res.json({ status: false, msg: 'Please provide a new code.' });
         const fetch_hotel = await adminHotelModel.findOne({title: title.toLowerCase()})
+        // return res.json({data: aminities})
         // if(fetch_hotel) return res.json({ status: false, msg: 'The hotel already exists' });
         
         // const blob_img = new blob(logo)
@@ -57,7 +59,6 @@ const add = async (req, res, next) => {
             description: description,
             video: video,
             logo: finalImage,
-            aminities: JSON.stringify(aminities),
             rules: JSON.stringify(rules),
             location:location,
             code: code,
@@ -66,8 +67,25 @@ const add = async (req, res, next) => {
             createdAt: timeStamp,
             updatedAt: timeStamp
         });
-        await addHotel.save()
-        return res.status(200).json({status:true, msg: 'Successfully added.', data: addHotel})
+        // await addHotel.save()
+        addHotel.save((err) => {
+
+            if (err) {
+              console.log(err);
+              const ErrorMessage = substringFunction(err.toString(), '#', 'b') // Fetching the Error message after hash
+              return res.status(500).send({ status: false, msg: `${ErrorMessage}` })
+            }
+            else {
+                var dataTosent = [];
+                aminities.forEach(async (e, index) => {
+                    // console.log('e', e, 'index', index)
+                    dataTosent.push({hotelId: addHotel._id, aminitiesId : e, createdById:_id,createdAt: timeStamp,updatedAt: timeStamp})
+                });
+                const insertHotelAminities = adminHotelAminities.collection.insertMany(dataTosent) 
+                return res.status(200).json({status:true, msg: 'Successfully added.', data: addHotel})                
+            }
+
+          })
         
     } catch (error) {
         console.log(error)
