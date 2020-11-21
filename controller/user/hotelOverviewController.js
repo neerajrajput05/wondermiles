@@ -75,8 +75,8 @@ const hotelPreview = async(req, res, next) => {
             // },
             
         ])
-        return res.json({data: fetch_hotelAminities})
-        // return res.status(200).json({status: true, msg:'successfully getting', data: fetch_hotelview, aminities: fetch_hotelAminities, rules: JSON.parse(fetch_hotelview.rules), callus: JSON.parse(fetch_hotelview.callUs)})
+        // return res.json({data: fetch_hotelAminities})
+        return res.status(200).json({status: true, msg:'successfully getting', data: fetch_hotelview, aminities: fetch_hotelAminities, rules: JSON.parse(fetch_hotelview.rules), callus: JSON.parse(fetch_hotelview.callUs)})
         
     } catch (error) {
         console.log(error)
