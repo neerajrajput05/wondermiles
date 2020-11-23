@@ -113,8 +113,61 @@ const hotelList = async(req, res, next) => {
     }
 }
 
+const HotelPreview = async(req, res, next) => {
+    try {
+        const { token } = req.headers
+        const { _id, email } = token_decode(token)
+        const { hotelId } = req.body
+        const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
+        if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
+        const fetch_hotel = await adminHotelModel.findOne({_id: hotelId})
+        if(!fetch_hotel) return res.status(404).status(404).json({status:false, msg:'The hotel not exists'})
+        const fetch_hotelAminities = await adminHotelAminities.aggregate([
+            
+            {
+                $match: { hotelId: fetch_hotel._id }
+            },
+            {
+                $lookup: {
+                    from: "aminities",
+                    as: "aminitiesView",
+                    let: {
+                        aminitiesId: "$aminitiesId"
+                    },
+                    pipeline: [
+                        { $addFields: { _id: { $toString: "$_id" } } },
+                        {
+                            $match: {
+                                $expr: {
+                                    $eq: ["$_id", "$$aminitiesId"]
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                $unwind: {
+                    path: "$aminitiesView",
+                    preserveNullAndEmptyArrays: true
+                }
+            }
+            
+        ])
+        // return res.json({data: fetch_hotelAminities})
+        return res.status(200).json({status: true, msg:'successfully getting', data: fetch_hotel, aminities: fetch_hotelAminities, rules: JSON.parse(fetch_hotel.rules), callus: JSON.parse(fetch_hotel.callUs)})
+        
+
+        
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({status:false, msg: 'something went wrong'})        
+    }
+}
+
 
 module.exports = {
     add: add,
-    hotelList: hotelList
+    hotelList: hotelList,
+    HotelPreview: HotelPreview
 }
