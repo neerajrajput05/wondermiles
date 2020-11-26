@@ -11,6 +11,7 @@ const adminCategoryModel = require('../../models/category')
 const adminRoomCategoryModel = require('../../models/roomCategory')
 const adminHotelModel = require('../../models/hotel')
 const adminHotelAminities = require('../../models/hotelAminities')
+const adminHotelTerm = require('../../models/hotelTerm')
 let blob = require('based-blob');
 const atob = require("atob");
 
@@ -125,8 +126,8 @@ const HotelPreview = async(req, res, next) => {
         const fetch_hotelAminities = await adminHotelAminities.aggregate([
             
             {
-                $match: { hotelId: fetch_hotel._id }
-            },
+                $match: { hotelId: fetch_hotel._id, type: "aminities" }
+            },  
             {
                 $lookup: {
                     from: "aminities",
@@ -154,8 +155,10 @@ const HotelPreview = async(req, res, next) => {
             }
             
         ])
-        // return res.json({data: fetch_hotelAminities})
-        return res.status(200).json({status: true, msg:'successfully getting', data: fetch_hotel, aminities: fetch_hotelAminities, rules: JSON.parse(fetch_hotel.rules), callus: JSON.parse(fetch_hotel.callUs)})
+
+        const fetch_logo = await adminHotelTerm.find({hotelId: hotelId})
+        if(!fetch_logo) return res.status(404).status(404).json({status:false, msg:'The hotel logo not exists'})
+        return res.status(200).json({status: true, msg:'successfully getting', data: fetch_hotel, aminities: fetch_hotelAminities, rules: JSON.parse(fetch_hotel.rules), callus: JSON.parse(fetch_hotel.callUs), hotellogo: fetch_logo})
         
 
         
@@ -169,15 +172,42 @@ const addHotelLogo = async(req, res, next) => {
     try {
         const { token } = req.headers
         const { _id, email } = token_decode(token)
-        const { hotelId, logo } = req.body
+        const { categoryId, hotelId, name, logo } = req.body
         const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
+        if(!categoryId) return res.status(404).json({ status: false, msg: 'Please provide the category id.' });
+        if(!hotelId) return res.status(404).json({ status: false, msg: 'Please provide the hotel id.' });
+        if(!name) return res.status(404).json({ status: false, msg: 'Please provide the name.' });
+        if(!logo) return res.status(404).json({ status: false, msg: 'Please provide the logo.' });
+        const fetch_category = await adminCategoryModel.find({_id:categoryId})
+        if(!fetch_category) return res.status(404).status(404).json({status:false, msg:'Category not exists'})
+        const fetch_hotel = await adminHotelModel.find({_id:hotelId})
+        if(!fetch_hotel) return res.status(404).status(404).json({status:false, msg:'The hotel not exists'})
+        const date = Date.now()
+        var fileName =_id+(date)+".png"
+        require("fs").writeFile(path.join("public/images/Hotel/"+fileName), logo, "base64", function(err) {
+            console.log(err);
+        });
+        const URL = req.protocol+"://"+req.headers.host
+        const finalImage = URL+"/images/Hotel/"+fileName;
+        const addHotel_logo = new adminHotelTerm({
+            hotelId: hotelId,
+            type: 'image',
+            name: name,
+            logo: fileName,
+            createdAt: timeStamp,
+            updatedAt: timeStamp
+        })
+
+        await addHotel_logo.save()
+        return res.status(200).json({status:true,msg:'successfully added.', data: addHotel_logo})
         
     } catch (error) {
         console.log(error)
         return res.status(500).json({status:false, msg: 'something went wrong'})                
     }
 }
+
 
 
 module.exports = {
