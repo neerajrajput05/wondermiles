@@ -156,7 +156,7 @@ const HotelPreview = async(req, res, next) => {
             
         ])
 
-        const fetch_logo = await adminHotelTerm.find({hotelId: hotelId})
+        const fetch_logo = await adminHotelTerm.find({hotelId: hotelId, type: "image"})
         if(!fetch_logo) return res.status(404).status(404).json({status:false, msg:'The hotel logo not exists'})
         return res.status(200).json({status: true, msg:'successfully getting', data: fetch_hotel, aminities: fetch_hotelAminities, rules: JSON.parse(fetch_hotel.rules), callus: JSON.parse(fetch_hotel.callUs), hotellogo: fetch_logo})
         
