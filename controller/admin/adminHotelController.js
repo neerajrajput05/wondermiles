@@ -194,7 +194,8 @@ const addHotelLogo = async(req, res, next) => {
             hotelId: hotelId,
             type: 'image',
             name: name,
-            logo: fileName,
+            images: finalImage,
+            createdById: _id,
             createdAt: timeStamp,
             updatedAt: timeStamp
         })
