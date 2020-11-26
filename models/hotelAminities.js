@@ -8,7 +8,10 @@ const hotel_aminities = new Schema({
     },
     aminitiesId : {
         type: String
-    },    
+    }, 
+    type: {
+        type: String
+    },   
     createdById: {
         type: String
     },

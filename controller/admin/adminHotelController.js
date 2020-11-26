@@ -80,7 +80,7 @@ const add = async (req, res, next) => {
                 var dataTosent = [];
                 aminities.forEach(async (e, index) => {
                     // console.log('e', e, 'index', index)
-                    dataTosent.push({hotelId: addHotel._id, aminitiesId : e, createdById:_id,createdAt: timeStamp,updatedAt: timeStamp})
+                    dataTosent.push({hotelId: addHotel._id, aminitiesId : e, type:'aminities', createdById:_id,createdAt: timeStamp,updatedAt: timeStamp})
                 });
                 const insertHotelAminities = adminHotelAminities.collection.insertMany(dataTosent) 
                 return res.status(200).json({status:true, msg: 'Successfully added.', data: addHotel})                
@@ -165,9 +165,24 @@ const HotelPreview = async(req, res, next) => {
     }
 }
 
+const addHotelLogo = async(req, res, next) => {
+    try {
+        const { token } = req.headers
+        const { _id, email } = token_decode(token)
+        const { hotelId, logo } = req.body
+        const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
+        if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
+        
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({status:false, msg: 'something went wrong'})                
+    }
+}
+
 
 module.exports = {
     add: add,
     hotelList: hotelList,
-    HotelPreview: HotelPreview
+    HotelPreview: HotelPreview,
+    addHotelLogo: addHotelLogo
 }
