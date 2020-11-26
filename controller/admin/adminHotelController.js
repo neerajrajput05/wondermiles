@@ -172,15 +172,12 @@ const addHotelLogo = async(req, res, next) => {
     try {
         const { token } = req.headers
         const { _id, email } = token_decode(token)
-        const { categoryId, hotelId, name, logo } = req.body
+        const { hotelId, name, logo } = req.body
         const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
-        if(!categoryId) return res.status(404).json({ status: false, msg: 'Please provide the category id.' });
         if(!hotelId) return res.status(404).json({ status: false, msg: 'Please provide the hotel id.' });
         if(!name) return res.status(404).json({ status: false, msg: 'Please provide the name.' });
         if(!logo) return res.status(404).json({ status: false, msg: 'Please provide the logo.' });
-        const fetch_category = await adminCategoryModel.find({_id:categoryId})
-        if(!fetch_category) return res.status(404).status(404).json({status:false, msg:'Category not exists'})
         const fetch_hotel = await adminHotelModel.find({_id:hotelId})
         if(!fetch_hotel) return res.status(404).status(404).json({status:false, msg:'The hotel not exists'})
         const date = Date.now()
