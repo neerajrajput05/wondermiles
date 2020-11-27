@@ -11,6 +11,7 @@ const hotelModel = require('../../models/hotel')
 const sliderModel = require('../../models/slider');
 const aminitiesModel = require('../../models/aminities')
 const hotelAminitiesModel = require('../../models/hotelAminities')
+const adminHotelTerm = require('../../models/hotelTerm')
 
 
 const hotelPreview = async(req, res, next) => {
@@ -76,7 +77,9 @@ const hotelPreview = async(req, res, next) => {
             
         ])
         // return res.json({data: fetch_hotelAminities})
-        return res.status(200).json({status: true, msg:'successfully getting', data: fetch_hotelview, aminities: fetch_hotelAminities, rules: JSON.parse(fetch_hotelview.rules), callus: JSON.parse(fetch_hotelview.callUs)})
+        const fetch_logo = await adminHotelTerm.find({hotelId: hotelId, type: "image"})
+        if(!fetch_logo) return res.status(404).status(404).json({status:false, msg:'The hotel logo not exists'})
+        return res.status(200).json({status: true, msg:'successfully getting', data: fetch_hotelview, aminities: fetch_hotelAminities, rules: JSON.parse(fetch_hotelview.rules), callus: JSON.parse(fetch_hotelview.callUs), hotellogo: fetch_logo})
         
     } catch (error) {
         console.log(error)
