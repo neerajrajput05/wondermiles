@@ -9,6 +9,7 @@ const adminRoomController = require('../controller/admin/adminRoomController')
 const adminSliderController = require('../controller/admin/adminSliderController');
 const adminAminitesController = require('../controller/admin/adminAminitesController');
 const adminSocialController = require('../controller/admin/adminSocialController');
+const adminContactController = require('../controller/admin/adminContactController');
 
 /* GET users listing. */
 // router.get('/', function(req, res, next) {
@@ -50,6 +51,10 @@ router.post('/addRoom', verifyToken, adminRoomController.add)
 router.post('/addSocial', verifyToken, adminSocialController.add)
 router.post('/socialList', verifyToken, adminSocialController.socialList)
 
+/*** Add Contact */
+
+router.post('/addContact', verifyToken, adminContactController.add)
+router.post('/contactList', verifyToken, adminContactController.contactList)
 
 
 
