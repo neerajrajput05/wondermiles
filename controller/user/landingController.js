@@ -10,7 +10,19 @@ const roomModel = require('../../models/room')
 const hotelModel = require('../../models/hotel')
 const sliderModel = require('../../models/slider')
 const socialModel = require('../../models/social')
+const hotelSubCategory = require('../../models/category')
 
+
+const headerPage = async(req, res, next) => {
+    try {
+        const fetch_headertype = await hotelSubCategory.find({status: true, type: "sub_main"})
+        if(!fetch_headertype) return res.status(404).json({status:false, msg:'The sub category not found.'})
+        return res.json({status: true, msg:'successfully getting', data: fetch_headertype})
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({status:false, msg: 'something went wrong.'})
+    }
+}
 
 const landingPalaceAccomdation = async(req, res, next) => {
     try {
@@ -47,7 +59,6 @@ const landingSlider = async(req, res, next) => {
 
 const landingSocial = async(req, res, next) => {
     try {
-        console.log('yes')
         const fetch_social = await socialModel.find()
         if(!fetch_social) return res.status(404).json({status:false, msg:'The social not found.'})
         return res.json({status: true, msg:'successfully getting', data: fetch_social})
@@ -61,6 +72,7 @@ const landingSocial = async(req, res, next) => {
 
 
 module.exports = {
+    headerPage: headerPage,
     landingPalaceAccomdation: landingPalaceAccomdation,
     landingHotelAccomdation: landingHotelAccomdation,
     landingSlider: landingSlider,
