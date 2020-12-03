@@ -7,19 +7,21 @@ const cryptr = new Cryptr('myTotalySecretKey');
 const config = require('../../config/database');
 const path = require('path')
 const token_decode = require('../../logic/token_decode')
-const adminCategoryModel = require('../../models/category')
+const adminCategoryModel = require('../../models/category');
+const { type } = require('os');
 
 
 const add = async (req, res, next) => {
     try {
         const { token } = req.headers
         const { _id, email } = token_decode(token)
-        const {name, description, image} = req.body
+        const {name, description, image, type} = req.body
         const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
         if(!name) return res.status(404).json({ status: false, msg: 'Please provide the name' });
         if(!description) return res.status(404).json({ status: false, msg: 'Please provide the description' });
         if(!image) return res.status(404).json({ status: false, msg: 'Please provide the image' });
+        if(!type) return res.status(404).json({ status: false, msg: 'Please provide the type' });
         const fetch_category = await adminCategoryModel.findOne({name: name.toLowerCase()})
         if(fetch_category) return res.status(404).json({ status: false, msg: 'This category already exists' });
         const date = Date.now()
@@ -27,13 +29,12 @@ const add = async (req, res, next) => {
         require("fs").writeFile(path.join("public/images/Category/"+fileName), image, "base64", function(err) {
             console.log(err);
         });
-        
         const URL = req.protocol+"://"+req.headers.host
         const finalImage = URL+"/images/Category/"+fileName;
         const addCategory = new adminCategoryModel({
             name: name,
             description: description,
-            type: "main",
+            type: type,
             image: finalImage,
             createdById: _id,
             createdAt: timeStamp,
