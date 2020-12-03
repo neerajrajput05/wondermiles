@@ -13,6 +13,11 @@ const category = new Schema({
         trim: true,
         lowercase: true
     },
+    type: {
+        type: String,
+        lowercase: true,
+        trim: true
+    },
     image: {
         type: String,
     },

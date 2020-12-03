@@ -32,6 +32,7 @@ const add = async (req, res, next) => {
         const addCategory = new adminCategoryModel({
             name: name,
             description: description,
+            type: "main",
             image: finalImage,
             createdById: _id,
             createdAt: timeStamp,
