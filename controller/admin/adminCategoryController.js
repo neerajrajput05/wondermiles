@@ -27,6 +27,7 @@ const add = async (req, res, next) => {
         require("fs").writeFile(path.join("public/images/Category/"+fileName), image, "base64", function(err) {
             console.log(err);
         });
+        
         const URL = req.protocol+"://"+req.headers.host
         const finalImage = URL+"/images/Category/"+fileName;
         const addCategory = new adminCategoryModel({
