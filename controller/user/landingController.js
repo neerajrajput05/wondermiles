@@ -9,6 +9,7 @@ const path = require('path')
 const roomModel = require('../../models/room')
 const hotelModel = require('../../models/hotel')
 const sliderModel = require('../../models/slider')
+const socialModel = require('../../models/social')
 
 
 const landingPalaceAccomdation = async(req, res, next) => {
@@ -44,10 +45,24 @@ const landingSlider = async(req, res, next) => {
     }
 }
 
+const landingSocial = async(req, res, next) => {
+    try {
+        console.log('yes')
+        const fetch_social = await socialModel.find()
+        if(!fetch_social) return res.status(404).json({status:false, msg:'The social not found.'})
+        return res.json({status: true, msg:'successfully getting', data: fetch_social})
+        
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({status:false, msg: 'something went wrong'})
+    }
+}
+
 
 
 module.exports = {
     landingPalaceAccomdation: landingPalaceAccomdation,
     landingHotelAccomdation: landingHotelAccomdation,
-    landingSlider: landingSlider
+    landingSlider: landingSlider,
+    landingSocial: landingSocial
 }
