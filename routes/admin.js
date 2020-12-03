@@ -23,6 +23,7 @@ router.post('/userList', verifyToken, adminController.userList)
 /** Category */
 router.post('/addCategory', verifyToken, adminCategoryController.add)
 router.post('/categoryList', verifyToken, adminCategoryController.categoryList)
+router.post('/subcategoryList', verifyToken, adminCategoryController.subcategoryList)
 
 /**** Aminities Hotel */
 router.post('/addAminities', verifyToken, adminAminitesController.add)
