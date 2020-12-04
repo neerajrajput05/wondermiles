@@ -92,7 +92,7 @@ const editCategory = async(req, res, next) => {
         if(!newDescription) return res.status(404).json({ status: false, msg: 'Please provide the description' });
         const fetch_category = await adminCategoryModel.findOne({_id:categoryId})
         if(!fetch_category) return res.status(404).json({status:false, msg:'Category not found.'})
-        if(fetch_category.image !== newImage)
+        if(fetch_category.image != newImage)
         {
             var fileName =_id+String(date)+".png";
             
@@ -105,6 +105,7 @@ const editCategory = async(req, res, next) => {
         else{
             var finalImage = fetch_category.image
         }
+        console.log('final', finalImage)
         fetch_category.name = newName
         fetch_category.description = newDescription
         fetch_category.image = finalImage
