@@ -11,11 +11,39 @@ const hotelModel = require('../../models/hotel')
 const sliderModel = require('../../models/slider')
 const socialModel = require('../../models/social')
 const hotelSubCategory = require('../../models/category')
+const CategoryModel = require('../../models/category')
 
 
 const headerPage = async(req, res, next) => {
     try {
+        // const hotel = await CategoryModel.aggregate([
+        //     {
+        //         $match: { type: "main", name: "hotel" }
+        //     },
+        //     {
+        //         $lookup: {
+        //             from: "categories",
+        //             as: "subcategories",
+        //             let: {
+        //                 categoryType: "sub_main"
+        //             },
+        //             pipeline: [
+        //                 { $addFields: { _id: { $toString: "$_id" } } },
+        //                 {
+        //                     $match: {
+        //                         $expr: {
+        //                             $eq: ["$type", "$$categoryType"]
+        //                         }
+        //                     }
+        //                 }
+        //             ]
+        //         }
+        //     },            
+
+        // ])
+        // return res.send(hotel)
         const fetch_headertype = await hotelSubCategory.find({status: true, type: "sub_main"})
+        
         if(!fetch_headertype) return res.status(404).json({status:false, msg:'The sub category not found.'})
         return res.json({status: true, msg:'successfully getting', data: fetch_headertype})
     } catch (error) {
