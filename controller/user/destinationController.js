@@ -12,8 +12,6 @@ const sliderModel = require('../../models/slider')
 const categoryModel = require('../../models/category');
 const { send } = require('process');
 const { hotelList } = require('../admin/adminHotelController');
-const { lookup } = require('dns');
-const { pipeline } = require('stream');
 
 
 const destinationList = async(req, res, next) => {
