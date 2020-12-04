@@ -24,6 +24,8 @@ router.post('/userList', verifyToken, adminController.userList)
 
 /** Category */
 router.post('/addCategory', verifyToken, adminCategoryController.add)
+router.post('/editCategory', verifyToken, adminCategoryController.editCategory)
+router.post('/previewCategory', verifyToken, adminCategoryController.previewCategory)
 router.post('/categoryList', verifyToken, adminCategoryController.categoryList)
 router.post('/subcategoryList', verifyToken, adminCategoryController.subcategoryList)
 
