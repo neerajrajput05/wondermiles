@@ -54,7 +54,29 @@ const headerPage = async(req, res, next) => {
 
 const landingPalaceAccomdation = async(req, res, next) => {
     try {
-        const fetch_hotel = await hotelModel.find({featured: true})
+        const fetch_hotel = await CategoryModel.aggregate([
+            {
+                $match: {
+                    type:"sub_main", status: true
+                }
+            },
+            {
+                $addFields: { 
+                    "_id" : {
+                        $toString: "$_id"
+                    }
+                 }
+            },
+            {
+                $lookup: {
+                    from: "hotels",
+                    localField: "_id",
+                    foreignField: "type",
+                    as: "hotelList"
+                }
+            }
+        ])
+        // return res.send(fetch_hotel)
         if(!fetch_hotel) return res.status(404).json({status:false, msg:'The palace not found.'})
         return res.json({status: true, msg:'successfully getting', data: fetch_hotel})
     } catch (error) {
