@@ -3,7 +3,7 @@ var router = express.Router();
 const userController = require('../controller/user/userController')
 const verifyToken = require('../controller/authController');
 const landingController = require('../controller/user/landingController');
-const destinationController = require('../controller/user/destinationController');
+const hotelListController = require('../controller/user/hotelListController');
 const hotelOverviewController = require('../controller/user/hotelOverviewController');
 const contactController = require('../controller/user/contactController');
 
@@ -24,7 +24,7 @@ router.get('/landingSlider', landingController.landingSlider)
 router.get('/landingSocial', landingController.landingSocial)
 
 /**** Destination Page */
-router.post('/destinationList', destinationController.destinationList)
+router.post('/hotelList', hotelListController.hotelList)
 
 /*** Hotel Overview */
 router.post('/hotelPreview', hotelOverviewController.hotelPreview)

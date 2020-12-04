@@ -10,11 +10,9 @@ const roomModel = require('../../models/room')
 const hotelModel = require('../../models/hotel')
 const sliderModel = require('../../models/slider')
 const categoryModel = require('../../models/category');
-const { send } = require('process');
-const { hotelList } = require('../admin/adminHotelController');
 
 
-const destinationList = async(req, res, next) => {
+const hotelList = async(req, res, next) => {
     try {
         const { name } = req.body
         if(!name) return res.status(404).json({status:false, msg:'Please provide correct name.'})
@@ -54,5 +52,5 @@ const destinationList = async(req, res, next) => {
 
 
 module.exports = {
-    destinationList: destinationList
+    hotelList: hotelList
 }
