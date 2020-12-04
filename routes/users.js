@@ -24,7 +24,7 @@ router.get('/landingSlider', landingController.landingSlider)
 router.get('/landingSocial', landingController.landingSocial)
 
 /**** Destination Page */
-router.get('/destinationList', destinationController.destinationList)
+router.post('/destinationList', destinationController.destinationList)
 
 /*** Hotel Overview */
 router.post('/hotelPreview', hotelOverviewController.hotelPreview)
