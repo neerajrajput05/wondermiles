@@ -13,6 +13,9 @@ const category = new Schema({
         trim: true,
         lowercase: true
     },
+    parent: {
+        type: String
+    },
     type: {
         type: String,
         lowercase: true,
