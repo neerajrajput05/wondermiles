@@ -104,7 +104,34 @@ const hotelList = async(req, res, next) => {
         const { _id, email } = token_decode(token)
         const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
-        const fetch_hotel = await adminHotelModel.find()
+        const fetch_hotel = await adminHotelModel.aggregate([
+            {
+                $lookup: {
+                    from: "categories",
+                    as: "categoriesType",
+                    let: {
+                        typeId: "$type"
+                    },
+                    pipeline: [
+                        { $addFields: { _id: { $toString: "$_id" } } },
+                        {
+                            $match: {
+                                $expr: {
+                                    $eq: ["$_id", "$$typeId"]
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                $unwind: {
+                    path: "$categoriesType",
+                    preserveNullAndEmptyArrays: true
+                }
+            }
+        ])
+        // return res.send(fetch_hotel)
         if(!fetch_hotel) return res.status(404).status(404).json({status:false, msg:'hotel not exists'})
         return res.status(200).json({status:true, msg: 'Successfully getting.', data: fetch_hotel})
         

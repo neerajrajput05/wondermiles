@@ -67,8 +67,63 @@ const sliderList = async(req, res, next) =>{
     }
 }
 
+const editSlider = async(req, res, next) => {
+    try {
+        const { token } = req.headers
+        const { _id, email } = token_decode(token)
+        const { sliderId, newTitle, newDescription, newImage } = req.body
+        const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
+        if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
+        if(!newTitle) return res.status(404).json({ status: false, msg: 'Please provide the title' });
+        if(!newDescription) return res.status(404).json({ status: false, msg: 'Please provide the description' });
+        const fetch_slider = await adminSliderModel.findOne({_id:sliderId})
+        if(!fetch_slider) return res.status(404).json({status:false, msg:'Slider not found.'})
+        const date = Date.now();
+        if(fetch_slider.image !== newImage)
+        {
+            var fileName =_id+String(date)+".png";
+            
+            require('fs').writeFile(path.join("public/images/Slider/"+fileName), newImage, "base64", function(err){
+                console.log(err);
+            });
+            const URL = req.protocol+"://"+req.headers.host
+            var finalImage = URL+"/images/Slider/"+fileName;
+        }
+        else{
+            var finalImage = fetch_slider.image
+        }
+        console.log('final', finalImage)
+        fetch_slider.title = newTitle
+        fetch_slider.description = newDescription
+        fetch_slider.image = finalImage
+        await fetch_slider.save()
+        return res.status(200).json({status:true, msg:'successfully updated', data: fetch_slider})      
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({status:false, msg: 'something went wrong'})                
+    }
+}
+
+const previewSlider = async(req, res, next) => {
+    try {
+        const { token } = req.headers
+        const { _id, email } = token_decode(token)
+        const { sliderId} = req.body
+        const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
+        if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
+        const fetch_slider = await adminSliderModel.findOne({_id:sliderId})
+        if(!fetch_slider) return res.status(404).json({status:false, msg:'Slider not found.'})
+        return res.status(200).json({status:true, msg:'successfully getting', data: fetch_slider})      
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({status:false, msg: 'something went wrong'})                
+    }
+}
+
 
 module.exports = {
     add: add,
-    sliderList: sliderList
+    sliderList: sliderList,
+    editSlider: editSlider,
+    previewSlider: previewSlider
 }

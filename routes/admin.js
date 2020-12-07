@@ -36,6 +36,8 @@ router.post('/aminitiesList', verifyToken, adminAminitesController.aminitiesList
 /** Slider */
 router.post('/addSlider', verifyToken, adminSliderController.add)
 router.post('/sliderList', verifyToken, adminSliderController.sliderList)
+router.post('/editSlider', verifyToken, adminSliderController.editSlider)
+router.post('/previewSlider', verifyToken, adminSliderController.previewSlider)
 
 /** Room Category */
 router.post('/addRoomCategory', verifyToken, adminRoomCategoryController.add)
