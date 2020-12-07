@@ -74,7 +74,12 @@ const subcategoryList = async(req, res, next) => {
         const { categoryId } = req.body
         const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
-        const fetch_category = await adminCategoryModel.find({type:"sub_main", status: true})
+        const fetch_category = await adminCategoryModel.aggregate([
+            {
+                $match: { type: "sub_main", parent: categoryId }
+            }
+            ])
+            // return res.send(fetch_category)
         if(!fetch_category) return res.status(404).json({status:false, msg:'Category not found.'})
         return res.status(200).json({status:true, msg:'successfully getting', data: fetch_category})
     } catch (error) {
