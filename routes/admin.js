@@ -10,6 +10,7 @@ const adminSliderController = require('../controller/admin/adminSliderController
 const adminAminitesController = require('../controller/admin/adminAminitesController');
 const adminSocialController = require('../controller/admin/adminSocialController');
 const adminContactController = require('../controller/admin/adminContactController');
+const adminDestinationController = require('../controller/admin/adminDestinationController')
 
 /* GET users listing. */
 // router.get('/', function(req, res, next) {
@@ -47,6 +48,10 @@ router.post('/addHotel', verifyToken, adminHotelController.add)
 router.post('/hotelList', verifyToken, adminHotelController.hotelList)
 router.post('/singleHotel', verifyToken, adminHotelController.HotelPreview)
 router.post('/addHotelLogo', verifyToken, adminHotelController.addHotelLogo)
+
+
+/*** Destination  */
+router.post('/addDestination', verifyToken, adminDestinationController.add)
 
 /** Room */
 router.post('/addRoom', verifyToken, adminRoomController.add)
