@@ -35,6 +35,7 @@ const add = async (req, res, next) => {
             name: name,
             description: description,
             type: type,
+            parent: parent,
             image: finalImage,
             createdById: _id,
             createdAt: timeStamp,
