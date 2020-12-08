@@ -8,7 +8,6 @@ const config = require('../../config/database');
 const path = require('path')
 const token_decode = require('../../logic/token_decode')
 const adminCategoryModel = require('../../models/category');
-const { type } = require('os');
 
 
 const add = async (req, res, next) => {

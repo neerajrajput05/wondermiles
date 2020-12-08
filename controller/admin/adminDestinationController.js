@@ -50,6 +50,22 @@ const add = async (req, res, next) => {
     }
 }
 
+const typeList = async(req, res, next) => {
+    try {
+        const { token } = req.headers
+        const { _id, email } = token_decode(token)
+        const { type } = req.body
+        const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
+        if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
+        const fetch_state = await adminDestinationModel.find({status:true, type: type})
+        if(!fetch_state) return res.status(404).json({status:false, msg:`${type} not found.`})
+        return res.status(200).json({status:true, msg:'successfully getting', data: fetch_state})
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({status:false, msg: 'something went wrong'})        
+    }
+}
+
 
 const destinationList = async(req, res, next) => {
     try {
@@ -145,6 +161,7 @@ const previewCategory = async(req, res, next) => {
 module.exports = {
     add: add,
     destinationList: destinationList,
+    typeList: typeList,
     subcategoryList: subcategoryList,
     editCategory: editCategory,
     previewCategory: previewCategory

@@ -53,6 +53,7 @@ router.post('/addHotelLogo', verifyToken, adminHotelController.addHotelLogo)
 /*** Destination  */
 router.post('/addDestination', verifyToken, adminDestinationController.add)
 router.post('/destinationList', verifyToken, adminDestinationController.destinationList)
+router.post('/typeList', verifyToken, adminDestinationController.typeList)
 
 /** Room */
 router.post('/addRoom', verifyToken, adminRoomController.add)
