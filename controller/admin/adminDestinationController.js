@@ -15,34 +15,56 @@ const add = async (req, res, next) => {
     try {
         const { token } = req.headers
         const { _id, email } = token_decode(token)
-        const {name, description, image, type, parent} = req.body
+        const {name, city, description, image, parent} = req.body
         const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
-        if(!name) return res.status(404).json({ status: false, msg: 'Please provide the name' });
+        if(!city) return res.status(404).json({ status: false, msg: 'Please provide the city' });
         if(!description) return res.status(404).json({ status: false, msg: 'Please provide the description' });
         if(!image) return res.status(404).json({ status: false, msg: 'Please provide the image' });
-        if(!type) return res.status(404).json({ status: false, msg: 'Please provide the type' });
-        const fetch_destination = await adminDestinationModel.findOne({name: name.toLowerCase()})
-        if(fetch_destination) return res.status(404).json({ status: false, msg: 'This destination already exists' });
         const date = Date.now()
-        var fileName =_id+(date)+".png"
-        require("fs").writeFile(path.join("public/images/Destination/"+fileName), image, "base64", function(err) {
-            console.log(err);
-        });
-        const URL = req.protocol+"://"+req.headers.host
-        const finalImage = URL+"/images/Destination/"+fileName;
-        const addDestination = new adminDestinationModel({
-            name: name,
-            description: description,
-            type: type,
-            parent: parent,
-            image: finalImage,
-            createdById: _id,
-            createdAt: timeStamp,
-            updatedAt: timeStamp
-        });
-        await addDestination.save()
-        return res.status(200).json({status:true, msg: 'Successfully added.', data: addDestination})
+        var fileName =_id+(date)+".png"            
+        if(name === "" || name === "select"){
+            const fetch_destination = await adminDestinationModel.findOne({name: city.toLowerCase(), parent: parent, type:'state'})
+            if(fetch_destination) return res.status(404).json({ status: false, msg: 'This state already exists' });
+            require("fs").writeFile(path.join("public/images/Destination/"+fileName), image, "base64", function(err) {
+                console.log(err);
+            });
+            const URL = req.protocol+"://"+req.headers.host
+            const finalImage = URL+"/images/Destination/"+fileName;
+            const addState = new adminDestinationModel({
+                name: city,
+                description: description,
+                type: 'state',
+                parent: parent,
+                image: finalImage,
+                createdById: _id,
+                createdAt: timeStamp,
+                updatedAt: timeStamp
+            })
+            await addState.save()
+            return res.status(200).json({status:true, msg: 'Successfully added.', data: addState})
+        }
+        else{
+            const fetch_city = await adminDestinationModel.findOne({name: city.toLowerCase(), parent:name, type: 'city'})
+            if(fetch_city) return res.status(404).json({ status: false, msg: 'This city already exists' });
+            require("fs").writeFile(path.join("public/images/Destination/"+fileName), image, "base64", function(err) {
+                console.log(err);
+            });
+            const URL = req.protocol+"://"+req.headers.host
+            const finalImage = URL+"/images/Destination/"+fileName;
+            const addCity = new adminDestinationModel({
+                name: city,
+                description: description,
+                type: 'city',
+                parent: name,
+                image: finalImage,
+                createdById: _id,
+                createdAt: timeStamp,
+                updatedAt: timeStamp
+            })
+            await addCity.save()
+            return res.status(200).json({status:true, msg: 'Successfully added.', data: addCity})
+        }
         
     } catch (error) {
         console.log(error)
