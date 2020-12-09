@@ -80,7 +80,7 @@ const typeList = async(req, res, next) => {
         const { type } = req.body
         const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
-        const fetch_state = await adminDestinationModel.find({status:true, type: type})
+        const fetch_state = await adminDestinationModel.find({status:true, type: type}).sort({name: 1})
         if(!fetch_state) return res.status(404).json({status:false, msg:`${type} not found.`})
         return res.status(200).json({status:true, msg:'successfully getting', data: fetch_state})
     } catch (error) {
@@ -94,12 +94,86 @@ const destinationList = async(req, res, next) => {
     try {
         const { token } = req.headers
         const { _id, email } = token_decode(token)
-        const { type, parent } = req.body
         const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
-        const fetch_category = await adminCategoryModel.find({type:type})
-        if(!fetch_category) return res.status(404).json({status:false, msg:'Category not found.'})
-        return res.status(200).json({status:true, msg:'successfully getting', data: fetch_category})
+        const fetch_destination = await adminDestinationModel.aggregate([
+            {
+                $match: { type: "country", parent:"0" }
+            }, 
+            {
+                $addFields: {
+                    "_id": { $toString: "$_id" }
+                }
+            },
+            {
+                $lookup: {
+                    from: "destinations",
+                    let: {
+                        stateId: "$_id",
+                        type: "state"
+                    },
+                    as: "state",
+                    pipeline: [
+                        { $addFields: { _id: { $toString: "$_id" } } },
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq:  ["$parent", "$$stateId"]},
+                                        { $eq:  ["$type", "$$type"]}
+                                    ]
+                                }
+                            },
+                        },
+                        {
+                            $sort: { "name": 1 } 
+                        },
+                        {
+                            $unwind: {
+                                path: "$state",
+                                preserveNullAndEmptyArrays: true
+                            }  
+                        },
+                        {
+                            $lookup: {
+                                from: "destinations",
+                                let: {
+                                    cityId: "$_id"
+                                },
+                                as: "city",
+                                pipeline: [
+                                    { $addFields: { _id: { $toString: "$_id" } } },
+                                    {
+                                        $match: {
+                                            $expr: {
+                                                $and: [
+                                                    { $eq:  ["$parent", "$$cityId"]},
+                                                    { $eq:  ["$type", "city"]}
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        $sort: { "name": 1 } 
+                                    },
+                                    {
+                                        $unwind: {
+                                            path: "$city",
+                                            preserveNullAndEmptyArrays: true
+                                        }  
+                                    },
+                                ]
+
+                            }
+                        }   
+                    ]
+                }
+            }
+                                                     
+        ])
+        return res.send(fetch_destination)
+        if(!fetch_destination) return res.status(404).json({status:false, msg:'Destination not found.'})
+        return res.status(200).json({status:true, msg:'successfully getting', data: fetch_destination})
     } catch (error) {
         console.log(error)
         return res.status(500).json({status:false, msg: 'something went wrong'})        
