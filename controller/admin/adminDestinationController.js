@@ -186,7 +186,7 @@ const editDestination = async(req, res, next) => {
         const { destinationId, newName, newCity, newDescription, newImage, newParent } = req.body
         const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
-        if(!newName) return res.status(404).json({ status: false, msg: 'Please provide the name' });
+        // if(!newName) return res.status(404).json({ status: false, msg: 'Please provide the name' });
         if(!newCity) return res.status(404).json({ status: false, msg: 'Please provide the city' });
         if(!newDescription) return res.status(404).json({ status: false, msg: 'Please provide the description' });
         let fetch_destination = await adminDestinationModel.findOne({_id:destinationId})
