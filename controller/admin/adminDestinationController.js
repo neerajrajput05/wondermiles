@@ -171,7 +171,6 @@ const destinationList = async(req, res, next) => {
             }
                                                      
         ])
-        return res.send(fetch_destination)
         if(!fetch_destination) return res.status(404).json({status:false, msg:'Destination not found.'})
         return res.status(200).json({status:true, msg:'successfully getting', data: fetch_destination})
     } catch (error) {
@@ -180,51 +179,82 @@ const destinationList = async(req, res, next) => {
     }
 }
 
-const subcategoryList = async(req, res, next) => {
+const editDestination = async(req, res, next) => {
     try {
         const { token } = req.headers
         const { _id, email } = token_decode(token)
-        const { categoryId, type } = req.body
-        const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
-        if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
-        const fetch_category = await adminCategoryModel.aggregate([
-            {
-                $match: { parent: categoryId }
-            }
-            ])
-            // return res.send(fetch_category)
-        if(!fetch_category) return res.status(404).json({status:false, msg:'Category not found.'})
-        return res.status(200).json({status:true, msg:'successfully getting', data: fetch_category})
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({status:false, msg: 'something went wrong'})        
-    }
-}
-
-const editCategory = async(req, res, next) => {
-    try {
-        const { token } = req.headers
-        const { _id, email } = token_decode(token)
-        const { categoryId, newName, newDescription, newImage } = req.body
+        const { destinationId, newName, newCity, newDescription, newImage, newParent } = req.body
         const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
         if(!newName) return res.status(404).json({ status: false, msg: 'Please provide the name' });
+        if(!newCity) return res.status(404).json({ status: false, msg: 'Please provide the city' });
         if(!newDescription) return res.status(404).json({ status: false, msg: 'Please provide the description' });
-        const fetch_category = await adminCategoryModel.findOne({_id:categoryId})
-        if(!fetch_category) return res.status(404).json({status:false, msg:'Category not found.'})
+        const fetch_destination = await adminDestinationModel.findOne({_id:destinationId})
+        if(!fetch_destination) return res.status(404).json({status:false, msg:'Destination not found.'})
         const date = Date.now();
-        if(fetch_category.image !== newImage)
-        {
-            var fileName =_id+String(date)+".png";
-            
-            require('fs').writeFile(path.join("public/images/Category/"+fileName), newImage, "base64", function(err){
+        // return res.send(fetch_destination)
+        if(fetch_destination.type === "city"){
+            return res.send("city")
+        }
+        else if(fetch_destination.type === "state"){
+            return res.send("state")
+            var fileName =_id+(date)+".png" 
+            const fetch_destination = await adminDestinationModel.findOne({name: city.toLowerCase(), parent: parent, type:'state'})
+            if(fetch_destination) return res.status(404).json({ status: false, msg: 'This state already exists' });
+            require("fs").writeFile(path.join("public/images/Destination/"+fileName), image, "base64", function(err) {
                 console.log(err);
             });
             const URL = req.protocol+"://"+req.headers.host
-            var finalImage = URL+"/images/Category/"+fileName;
+            const finalImage = URL+"/images/Destination/"+fileName;
+            const addState = new adminDestinationModel({
+                name: city,
+                description: description,
+                type: 'state',
+                parent: parent,
+                image: finalImage,
+                createdById: _id,
+                createdAt: timeStamp,
+                updatedAt: timeStamp
+            })
+            await addState.save()
+            return res.status(200).json({status:true, msg: 'Successfully added.', data: addState})
         }
         else{
-            var finalImage = fetch_category.image
+            return res.send("yes", fetch_destination)
+            var fileName =_id+(date)+".png" 
+            const fetch_city = await adminDestinationModel.findOne({name: city.toLowerCase(), parent:name, type: 'city'})
+            if(fetch_city) return res.status(404).json({ status: false, msg: 'This city already exists' });
+            require("fs").writeFile(path.join("public/images/Destination/"+fileName), image, "base64", function(err) {
+                console.log(err);
+            });
+            const URL = req.protocol+"://"+req.headers.host
+            const finalImage = URL+"/images/Destination/"+fileName;
+            const addCity = new adminDestinationModel({
+                name: city,
+                description: description,
+                type: 'city',
+                parent: name,
+                image: finalImage,
+                createdById: _id,
+                createdAt: timeStamp,
+                updatedAt: timeStamp
+            })
+            await addCity.save()
+            return res.status(200).json({status:true, msg: 'Successfully added.', data: addCity})
+        }
+        /*** Last */
+        if(fetch_destination.image !== newImage)
+        {
+            var fileName =_id+String(date)+".png";
+            
+            require('fs').writeFile(path.join("public/images/Destination/"+fileName), newImage, "base64", function(err){
+                console.log(err);
+            });
+            const URL = req.protocol+"://"+req.headers.host
+            var finalImage = URL+"/images/Destination/"+fileName;
+        }
+        else{
+            var finalImage = fetch_destination.image
         }
         console.log('final', finalImage)
         fetch_category.name = newName
@@ -238,16 +268,16 @@ const editCategory = async(req, res, next) => {
     }
 }
 
-const previewCategory = async(req, res, next) => {
+const previewDestination = async(req, res, next) => {
     try {
         const { token } = req.headers
         const { _id, email } = token_decode(token)
-        const { categoryId} = req.body
+        const { destinationId} = req.body
         const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
-        const fetch_category = await adminCategoryModel.findOne({_id:categoryId})
-        if(!fetch_category) return res.status(404).json({status:false, msg:'Category not found.'})
-        return res.status(200).json({status:true, msg:'successfully getting', data: fetch_category})      
+        const fetch_destination = await adminDestinationModel.findOne({_id:destinationId})
+        if(!fetch_destination) return res.status(404).json({status:false, msg:'Destination not found.'})
+        return res.status(200).json({status:true, msg:'successfully getting', data: fetch_destination})      
     } catch (error) {
         console.log(error)
         return res.status(500).json({status:false, msg: 'something went wrong'})                
@@ -259,7 +289,6 @@ module.exports = {
     add: add,
     destinationList: destinationList,
     typeList: typeList,
-    subcategoryList: subcategoryList,
-    editCategory: editCategory,
-    previewCategory: previewCategory
+    editDestination: editDestination,
+    previewDestination: previewDestination
 }
