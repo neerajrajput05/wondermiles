@@ -183,90 +183,34 @@ const editDestination = async(req, res, next) => {
     try {
         const { token } = req.headers
         const { _id, email } = token_decode(token)
-        const { destinationId, newName, newCity, newDescription, newImage, newParent } = req.body
+        const { destinationId, newName, newDescription, newImage } = req.body
         const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
-        // if(!newName) return res.status(404).json({ status: false, msg: 'Please provide the name' });
         if(!newCity) return res.status(404).json({ status: false, msg: 'Please provide the city' });
         if(!newDescription) return res.status(404).json({ status: false, msg: 'Please provide the description' });
-        // let fetch_destination = await adminDestinationModel.findOne({_id:destinationId})
-        // if(!fetch_destination) return res.status(404).json({status:false, msg:'Destination not found.'})
+        const fetch_destination = await adminDestinationModel.findOne({_id:destinationId})
+        if(!fetch_destination) return res.status(404).json({status:false, msg:'Destination not found.'})
         const date = Date.now();
-        if(newName === "" || newName === "select"){
-            let fetch_destination = await adminDestinationModel.findOne({parent: newParent, type:'state'})
-            if(!fetch_destination) return res.status(404).json({ status: false, msg: 'This state already exists' });
-            if(fetch_destination.image !== newImage)
-            {
-                var fileName =_id+String(date)+".png";
-                
-                require('fs').writeFile(path.join("public/images/Destination/"+fileName), newImage, "base64", function(err){
-                    console.log(err);
-                });
-                const URL = req.protocol+"://"+req.headers.host
-                var finalImage = URL+"/images/Destination/"+fileName;
-            }
-            else{
-                var finalImage = fetch_destination.image
-            }
-            // var fileName =_id+(date)+".png" 
-            // let fetch_destination = await adminDestinationModel.findOne({name: city.toLowerCase(), parent: parent, type:'state'})
-            // if(fetch_destination) return res.status(404).json({ status: false, msg: 'This state already exists' });
-            // require("fs").writeFile(path.join("public/images/Destination/"+fileName), image, "base64", function(err) {
-            //     console.log(err);
-            // });
-            // const URL = req.protocol+"://"+req.headers.host
-            // const finalImage = URL+"/images/Destination/"+fileName;
-
-                fetch_destination.name = newCity,
-                fetch_destination.description = newDescription,
-                fetch_destination.type = 'state',
-                fetch_destination.parent = newParent,
-                fetch_destination.image = finalImage,
-                fetch_destination.updatedAt = timeStamp
-            await fetch_destination.save()
-            return res.status(200).json({status:true, msg: 'Successfully updated.', data: fetch_destination})
+        
+        if(fetch_destination.image !== newImage)
+        {
+            var fileName =_id+String(date)+".png";
+            
+            require('fs').writeFile(path.join("public/images/Destination/"+fileName), newImage, "base64", function(err){
+                console.log(err);
+            });
+            const URL = req.protocol+"://"+req.headers.host
+            var finalImage = URL+"/images/Destination/"+fileName;
         }
         else{
-            if(fetch_destination.image !== newImage)
-            {
-                var fileName =_id+String(date)+".png";
-                
-                require('fs').writeFile(path.join("public/images/Destination/"+fileName), newImage, "base64", function(err){
-                    console.log(err);
-                });
-                const URL = req.protocol+"://"+req.headers.host
-                var finalImage = URL+"/images/Destination/"+fileName;
-            }
-            else{
-                var finalImage = fetch_destination.image
-            }
-            // var fileName =_id+(date)+".png" 
-            // const fetch_city = await adminDestinationModel.findOne({name: city.toLowerCase(), parent:name, type: 'city'})
-            // if(fetch_city) return res.status(404).json({ status: false, msg: 'This city already exists' });
-            // require("fs").writeFile(path.join("public/images/Destination/"+fileName), image, "base64", function(err) {
-            //     console.log(err);
-            // });
-            // const URL = req.protocol+"://"+req.headers.host
-            // const finalImage = URL+"/images/Destination/"+fileName;
-            const fetch_city = await adminDestinationModel.findOne({parent:newName, type: 'city'})
-            if(!fetch_city) return res.status(404).json({ status: false, msg: 'This city already exists' });
-            fetch_destination.name = newCity,
-            fetch_destination.description = newDescription,
-            fetch_destination.type = 'city',
-            fetch_destination.parent = newName,
-            fetch_destination.image = finalImage,
-            fetch_destination.updatedAt = timeStamp
-        await fetch_destination.save()
-            return res.status(200).json({status:true, msg: 'Successfully upated.', data: fetch_destination})
+            var finalImage = fetch_destination.image
         }
-        /*** Last */
-        
-        // console.log('final', finalImage)
-        // fetch_category.name = newName
-        // fetch_category.description = newDescription
-        // fetch_category.image = finalImage
-        // await fetch_category.save()
-        // return res.status(200).json({status:true, msg:'successfully updated', data: fetch_category})      
+        fetch_destination.name = newName,
+        fetch_destination.description = newDescription,
+        fetch_destination.image = finalImage,
+        fetch_destination.updatedAt = timeStamp
+        await fetch_destination.save()
+        return res.status(200).json({status:true, msg: 'Successfully upated.', data: fetch_destination})
     } catch (error) {
         console.log(error)
         return res.status(500).json({status:false, msg: 'something went wrong'})                
