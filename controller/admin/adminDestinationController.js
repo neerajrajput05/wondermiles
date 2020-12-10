@@ -189,10 +189,12 @@ const editDestination = async(req, res, next) => {
         // if(!newName) return res.status(404).json({ status: false, msg: 'Please provide the name' });
         if(!newCity) return res.status(404).json({ status: false, msg: 'Please provide the city' });
         if(!newDescription) return res.status(404).json({ status: false, msg: 'Please provide the description' });
-        let fetch_destination = await adminDestinationModel.findOne({_id:destinationId})
-        if(!fetch_destination) return res.status(404).json({status:false, msg:'Destination not found.'})
+        // let fetch_destination = await adminDestinationModel.findOne({_id:destinationId})
+        // if(!fetch_destination) return res.status(404).json({status:false, msg:'Destination not found.'})
         const date = Date.now();
         if(newName === "" || newName === "select"){
+            let fetch_destination = await adminDestinationModel.findOne({parent: newParent, type:'state'})
+            if(!fetch_destination) return res.status(404).json({ status: false, msg: 'This state already exists' });
             if(fetch_destination.image !== newImage)
             {
                 var fileName =_id+String(date)+".png";
@@ -246,9 +248,11 @@ const editDestination = async(req, res, next) => {
             // });
             // const URL = req.protocol+"://"+req.headers.host
             // const finalImage = URL+"/images/Destination/"+fileName;
+            const fetch_city = await adminDestinationModel.findOne({parent:newName, type: 'city'})
+            if(!fetch_city) return res.status(404).json({ status: false, msg: 'This city already exists' });
             fetch_destination.name = newCity,
             fetch_destination.description = newDescription,
-            fetch_destination.type = 'state',
+            fetch_destination.type = 'city',
             fetch_destination.parent = newName,
             fetch_destination.image = finalImage,
             fetch_destination.updatedAt = timeStamp
@@ -257,12 +261,12 @@ const editDestination = async(req, res, next) => {
         }
         /*** Last */
         
-        console.log('final', finalImage)
-        fetch_category.name = newName
-        fetch_category.description = newDescription
-        fetch_category.image = finalImage
-        await fetch_category.save()
-        return res.status(200).json({status:true, msg:'successfully updated', data: fetch_category})      
+        // console.log('final', finalImage)
+        // fetch_category.name = newName
+        // fetch_category.description = newDescription
+        // fetch_category.image = finalImage
+        // await fetch_category.save()
+        // return res.status(200).json({status:true, msg:'successfully updated', data: fetch_category})      
     } catch (error) {
         console.log(error)
         return res.status(500).json({status:false, msg: 'something went wrong'})                
