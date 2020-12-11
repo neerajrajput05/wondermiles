@@ -75,7 +75,7 @@ const subcategoryList = async(req, res, next) => {
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
         const fetch_category = await adminCategoryModel.aggregate([
             {
-                $match: { parent: categoryId }
+                $match: { parent: categoryId, type: type }
             }
             ])
             // return res.send(fetch_category)
