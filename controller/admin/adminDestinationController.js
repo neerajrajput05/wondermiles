@@ -233,11 +233,61 @@ const previewDestination = async(req, res, next) => {
     }
 }
 
+const countryList = async(req, res, next) => {
+    try {
+        const { token } = req.headers
+        const { _id, email } = token_decode(token)
+        const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
+        if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
+        const fetch_destination = await adminDestinationModel.find({parent:0, type:"country"})
+        if(!fetch_destination) return res.status(404).json({status:false, msg:'Destination not found.'})
+        return res.status(200).json({status:true, msg:'successfully getting', data: fetch_destination})      
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({status:false, msg: 'something went wrong'})                
+    }
+}
+
+const stateList = async(req, res, next) => {
+    try {
+        const { token } = req.headers
+        const { _id, email } = token_decode(token)
+        const { countryId} = req.body
+        const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
+        if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
+        const fetch_destination = await adminDestinationModel.find({parent:countryId, type:"state"})
+        if(!fetch_destination) return res.status(404).json({status:false, msg:'Destination not found.'})
+        return res.status(200).json({status:true, msg:'successfully getting', data: fetch_destination})      
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({status:false, msg: 'something went wrong'})                
+    }
+}
+
+const cityList = async(req, res, next) => {
+    try {
+        const { token } = req.headers
+        const { _id, email } = token_decode(token)
+        const { stateId} = req.body
+        const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
+        if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
+        const fetch_destination = await adminDestinationModel.find({parent:stateId, type: "city"})
+        if(!fetch_destination) return res.status(404).json({status:false, msg:'Destination not found.'})
+        return res.status(200).json({status:true, msg:'successfully getting', data: fetch_destination})      
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({status:false, msg: 'something went wrong'})                
+    }
+}
+
 
 module.exports = {
     add: add,
     destinationList: destinationList,
     typeList: typeList,
     editDestination: editDestination,
-    previewDestination: previewDestination
+    previewDestination: previewDestination,
+    countryList: countryList,
+    stateList: stateList,
+    cityList: cityList
 }

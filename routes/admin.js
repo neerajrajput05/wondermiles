@@ -56,6 +56,9 @@ router.post('/destinationList', verifyToken, adminDestinationController.destinat
 router.post('/previewDestination', verifyToken, adminDestinationController.previewDestination)
 router.post('/editDestination', verifyToken, adminDestinationController.editDestination)
 router.post('/typeList', verifyToken, adminDestinationController.typeList)
+router.post('/countryList', verifyToken, adminDestinationController.countryList)
+router.post('/stateList', verifyToken, adminDestinationController.stateList)
+router.post('/cityList', verifyToken, adminDestinationController.cityList)
 
 /** Room */
 router.post('/addRoom', verifyToken, adminRoomController.add)
