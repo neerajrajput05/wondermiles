@@ -19,8 +19,7 @@ const hotel = new Schema({
         trim: true
     },
     type: {
-        type: String,
-        trim: true
+        type: String
     },
     description : {
         type: String,
@@ -34,6 +33,9 @@ const hotel = new Schema({
         type: String,
     },
     rules: {
+        type: String
+    },
+    destinationId: {
         type: String
     },
     location: {

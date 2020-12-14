@@ -21,7 +21,7 @@ const add = async (req, res, next) => {
     try {
         const { token } = req.headers
         const { _id, email } = token_decode(token)
-        const { categoryId, title, subTitle, type, description, video, logo, aminities, rules, location, callUs, code, featured} = req.body
+        const { categoryId, title, subTitle, type, description, destination, video, logo, aminities, rules, location, callUs, code, featured} = req.body
         const fetch_admin = await admin.findOne({_id:_id, role:'admin'})
         if(!fetch_admin) return res.status(404).status(404).json({status:false, msg:'Admin not exists'})
         const fetch_category = await adminCategoryModel.find({_id:categoryId})
@@ -29,6 +29,7 @@ const add = async (req, res, next) => {
         if(!title) return res.status(404).json({ status: false, msg: 'Please provide the title.' });
         if(!subTitle) return res.status(404).json({ status: false, msg: 'Please provide the sub title.' });
         if(!type) return res.status(404).json({ status: false, msg: 'Please provide the type.' });
+        if(!destination) return res.status(404).json({ status: false, msg: 'Please provide the destination.' });
         if(!description) return res.json({ status: false, msg: 'Please provide the description' });
         if(!logo) return res.json({ status: false, msg: 'Please provide the logo' });
         if(!video) return res.json({ status: false, msg: 'Please provide the video' });
@@ -66,6 +67,7 @@ const add = async (req, res, next) => {
             location:location,
             code: code,
             callUs: JSON.stringify(callUs),
+            destinationId: destination,
             createdById: _id,
             featured: (featured) ? true : false,
             createdAt: timeStamp,
