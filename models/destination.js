@@ -10,8 +10,7 @@ const destination = new Schema({
     },
     image: {
         type: String,
-        trim: true,
-        lowercase: true
+        trim: true
     },
     description : {
         type: String,
